@@ -1,6 +1,6 @@
 from block import markdown_to_html_node
 import os
-from main import basepath
+import config
 
 def extract_title(markdown):
     lines = markdown.split("\n")
@@ -11,7 +11,7 @@ def extract_title(markdown):
         
     raise Exception("Title not found, is required")
 
-def generate_page(from_path, template_path, dest_path):
+def generate_page(from_path, template_path, dest_path, basepath):
     print(f"Generating page from {from_path}, to {dest_path} using {template_path}")
     from_content = ""
     template_content = ""
@@ -27,7 +27,7 @@ def generate_page(from_path, template_path, dest_path):
     content = template_content.replace("{{ Title }}", title).replace("{{ Content }}", content_html)
 
     content = content.replace('href="/', f'href="{basepath}')
-    content = content.replcea('src="/', f'src="{basepath}')
+    content = content.replace('src="/', f'src="{basepath}')
 
     dest_dir = os.path.dirname(dest_path)
     if os.path.exists(dest_dir) == False:
@@ -36,7 +36,7 @@ def generate_page(from_path, template_path, dest_path):
     with open(dest_path, 'w') as dest_file:
         dest_file.write(content)
 
-def generate_files_recursive(source_dir_path, dest_dir_path, template_file):
+def generate_files_recursive(source_dir_path, dest_dir_path, template_file, basepath):
     if not os.path.exists(dest_dir_path):
         os.mkdir(dest_dir_path)
 
@@ -44,6 +44,6 @@ def generate_files_recursive(source_dir_path, dest_dir_path, template_file):
         from_path = os.path.join(source_dir_path, filename)
         dest_path = os.path.join(dest_dir_path, filename)
         if os.path.isfile(from_path):
-            generate_page(from_path, template_file, dest_path.replace(".md", ".html"))
+            generate_page(from_path, template_file, dest_path.replace(".md", ".html"), basepath)
         else:
-            generate_files_recursive(from_path, dest_path, template_file)
+            generate_files_recursive(from_path, dest_path, template_file, basepath)
