@@ -18,7 +18,7 @@ def main():
     copy_files_recursive(dir_path_static, dir_path_docs)
 
     print("Build static pages...")
-    generate_files_recursive("content", dir_path_docs, "template.html")
+    generate_files_recursive("content", dir_path_docs, "template.html", basepath=basepath)
 
     for root, _, files in os.walk(dir_path_docs):
         for file in files:
