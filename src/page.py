@@ -1,6 +1,6 @@
 from block import markdown_to_html_node
 import os
-import shutil
+from main import basepath
 
 def extract_title(markdown):
     lines = markdown.split("\n")
@@ -25,6 +25,9 @@ def generate_page(from_path, template_path, dest_path):
     content_html = markdown_to_html_node(from_content).to_html()
 
     content = template_content.replace("{{ Title }}", title).replace("{{ Content }}", content_html)
+
+    content = content.replace('href="/', f'href="{basepath}')
+    content = content.replcea('src="/', f'src="{basepath}')
 
     dest_dir = os.path.dirname(dest_path)
     if os.path.exists(dest_dir) == False:
